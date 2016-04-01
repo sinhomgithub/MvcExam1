@@ -50,10 +50,10 @@ namespace MvcExam1.Controllers
             }
 
             var 客戶聯絡人data = repo客戶聯絡人.QueryBy客戶Id(id.Value);
-
-            ViewData.Model = 客戶資料data;
-            ViewBag.客戶聯絡人 = 客戶聯絡人data;
             
+            ViewData.Model = 客戶資料data;
+            ViewBag.客戶聯絡人 = 客戶聯絡人data;            
+                                    
             return View();
         }
 
@@ -63,10 +63,10 @@ namespace MvcExam1.Controllers
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Details(IList<MvcExam1.ViewModels.客戶資料BatchUpdateViewModel> data, int customId)
+        public ActionResult Details(IList<MvcExam1.ViewModels.客戶資料DetailsBatchUpdateViewModel> data, int 客戶資料Id)
         {
-            var 客戶資料data = repo客戶資料.Find(customId);
-            var 客戶聯絡人data = repo客戶聯絡人.QueryBy客戶Id(customId);
+            var 客戶資料data = repo客戶資料.Find(客戶資料Id);
+            var 客戶聯絡人data = repo客戶聯絡人.QueryBy客戶Id(客戶資料Id);
 
             // 如果比對合法
             if (data != null && ModelState.IsValid)
@@ -83,24 +83,11 @@ namespace MvcExam1.Controllers
                 return RedirectToAction("Index");   // 更新完成, 返回 Index
             }
 
-            // 比對失敗, 把更新的內容, 存到取出的資料 
-            // (因為 EditorFor 的 name 對不上 Model, 只能用這種方式, 自己處理 TextBox 的修改)
-            foreach(var row in 客戶聯絡人data)
-            {
-                var item = data.Where(p => p.Id == row.Id).FirstOrDefault();
-                if (item == null)
-                    continue;
-
-                row.職稱 = item.職稱;
-                row.手機 = item.手機;
-                row.電話 = item.電話;     
-            }
-
-            // 更新失敗重新顯示內容
+            // 更新失敗重新顯示內容            
             ViewData.Model = 客戶資料data;
-            ViewBag.客戶聯絡人 = 客戶聯絡人data;
+            ViewBag.客戶聯絡人 = 客戶聯絡人data;            
 
-            return View("Details");
+            return View();
         }
 
 

@@ -65,18 +65,19 @@
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+@Html.HiddenFor(model => model.Id)
 
 <hr />
 
-@{ 
-    var contacts = (IEnumerable<MvcExam1.Models.客戶聯絡人>)ViewBag.客戶聯絡人;
-}
-
 <h3>客戶聯絡人清單</h3>
+
+@{  
+    var contacts = (IEnumerable<MvcExam1.Models.客戶聯絡人>)ViewBag.客戶聯絡人;   
+}
 
 @using (Html.BeginForm())
 {
-    if (contacts.Count() > 0)
+    if (contacts != null && contacts.Count() > 0)
     {
     <table class="table">   
         <tr>
@@ -104,21 +105,16 @@
 
     
         @{     
-            var data = contacts.ToArray();
+            var data = Model.客戶聯絡人.ToArray();           
         }
 
         @for (int i = 0; i < data.Length; i++)
         {
             <tr>
                 <td>                    
-                    <div class="col-md-10">                              
-                        <input type="hidden" name="data[@i].Id" value="@data[i].Id" />
-
-                        <input type="text" name="data[@i].職稱" value="@data[i].職稱" class="form-control" /><br />
-                        @Html.ValidationMessage("data[" + i + "].職稱", "", new { @class = "text-danger" })
-
-                        @*@Html.EditorFor(model => data[i].職稱, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => data[i].職稱, "", new { @class = "text-danger" })*@
+                    <div class="col-md-10">                                                                          
+                        @Html.EditorFor(model => data[i].職稱, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => data[i].職稱, "", new { @class = "text-danger" })
                     </div>
                 </td>
                 <td>
@@ -129,37 +125,31 @@
                 </td>
                 <td>                    
                     <div class="col-md-10">
-                        <input type="text" name="data[@i].手機" value="@data[i].手機" class="form-control" /><br />
-                        @Html.ValidationMessage("data[" + i + "].手機", "", new { @class = "text-danger" })
-
-
-                        @*@Html.EditorFor(model => data[i].手機, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => data[i].手機, "", new { @class = "text-danger" })*@
+                        @Html.EditorFor(model => data[i].手機, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => data[i].手機, "", new { @class = "text-danger" })
                     </div>
                 </td>
                 <td>                    
                     <div class="col-md-10">
-                        <input type="text" name="data[@i].電話" value="@data[i].電話" class="form-control" /><br />
-                        @Html.ValidationMessage("data[" + i + "].電話", "", new { @class = "text-danger" })
-
-
-                        @*@Html.EditorFor(model => data[i].電話, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => data[i].電話, "", new { @class = "text-danger" })*@
+                        @Html.EditorFor(model => data[i].電話, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => data[i].電話, "", new { @class = "text-danger" })
                     </div>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => data[i].客戶資料.客戶名稱)                    
+
+                    @Html.HiddenFor(model=> data[i].Id)
                 </td>           
             </tr>
         }
 
         <tr>
-            <td>                                                
-                @Html.Hidden("customId", Model.Id)
+            <td>                                                                
+                @Html.Hidden("客戶資料Id", Model.Id)
                 <input type="submit" value="Save" class="btn btn-default" />                
             </td>
         </tr>
-    </table>
+    </table>    
     }
 
 }
