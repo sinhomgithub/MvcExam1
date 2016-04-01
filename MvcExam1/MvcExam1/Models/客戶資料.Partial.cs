@@ -45,7 +45,10 @@ namespace MvcExam1.Models
         [EmailAddress]
         [StringLength(250)]
         public string Email { get; set; }
-        
+
+        [Required]        
+        public string 客戶分類 { get; set; }
+
         public bool 是否已刪除 { get; set; }
     }
 

@@ -29,5 +29,6 @@ namespace MvcExam1.Models
         public virtual DbSet<客戶銀行資訊> 客戶銀行資訊 { get; set; }
         public virtual DbSet<客戶聯絡人> 客戶聯絡人 { get; set; }
         public virtual DbSet<客戶總合資訊> 客戶總合資訊 { get; set; }
+        public virtual DbSet<客戶分類清單> 客戶分類清單 { get; set; }
     }
 }

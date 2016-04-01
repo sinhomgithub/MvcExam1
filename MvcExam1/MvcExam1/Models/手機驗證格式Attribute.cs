@@ -12,7 +12,10 @@ namespace MvcExam1.Models
 
         public override bool IsValid(object value)
         {
-            string str = (string)value;
+            if (value == null || value.GetType() != typeof(string))
+                return false;
+
+            string str = (string)value;            
 
             Regex rx = new Regex(@"\d{4}-\d{6}");
             bool b = rx.Match(str).Success;

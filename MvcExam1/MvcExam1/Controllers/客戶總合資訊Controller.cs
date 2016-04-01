@@ -10,20 +10,19 @@ using MvcExam1.Models;
 
 namespace MvcExam1.Controllers
 {
-    public class 客戶總合資訊Controller : Controller
+    public class 客戶總合資訊Controller : BaseController
     {
-        private 客戶資料Entities db = new 客戶資料Entities();
-
+        
         // GET: 客戶總合資訊
-        public ActionResult Index(string keyword)
+        public ActionResult Index(string keyword, string export)
         {
-            var data = db.客戶總合資訊.AsQueryable();
+            var data = repo客戶總合資訊.Query(keyword);
 
             // 如果使用搜尋
-            if (String.IsNullOrWhiteSpace(Request["keyword"]) == false)
+            if (String.IsNullOrEmpty(export) == false)
             {
-                string keywordStr = Request["keyword"].Trim();
-                data = data.Where(p => p.客戶名稱.IndexOf(keywordStr) != -1 );
+                byte[] bs = repo客戶總合資訊.Export(data);
+                return this.File(bs, "application/vnd.ms-excel", "客戶總合資訊.xls");
             }
 
             return View(data);
@@ -36,7 +35,7 @@ namespace MvcExam1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶總合資訊 客戶總合資訊 = db.客戶總合資訊.Find(id);
+            客戶總合資訊 客戶總合資訊 = repo客戶總合資訊.Find(id.Value);
             if (客戶總合資訊 == null)
             {
                 return HttpNotFound();
@@ -44,13 +43,6 @@ namespace MvcExam1.Controllers
             return View(客戶總合資訊);
         }      
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+       
     }
 }
