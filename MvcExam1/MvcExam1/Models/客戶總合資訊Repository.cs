@@ -25,6 +25,8 @@ namespace MvcExam1.Models
                 data = data.Where(p => p.客戶名稱.Contains(keyword));
             }
 
+            data = data.OrderBy(p => p.客戶名稱);
+
             return data;
         }
 

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using NPOI.HSSF.UserModel;
 using System.IO;
+using System.Collections;
 
 namespace MvcExam1.Models
 {   
@@ -39,7 +40,7 @@ namespace MvcExam1.Models
         {
             entity.是否已刪除 = true;
         }
-
+        
         public IQueryable<客戶聯絡人> QueryBy客戶Id(int 客戶Id)
         {
             var data = this.All();
@@ -48,23 +49,72 @@ namespace MvcExam1.Models
         }
 
 
-        public IQueryable<客戶聯絡人> Query(string keyword)
+        public IQueryable<客戶聯絡人> Query(string keyword, string titleName, string sortColumn, bool isDesc)
         {
             var data = this.All();
 
+            // 過濾關鍵字
             if (String.IsNullOrEmpty(keyword) == false)
             {
                 data = data.Where(p =>
-                   p.Email.Contains(keyword)  ||
-                   p.姓名.Contains(keyword)  ||
-                   p.手機.Contains(keyword)  ||
-                   p.職稱.Contains(keyword)  ||
-                   p.電話.Contains(keyword)                   
+                   p.Email.Contains(keyword) ||
+                   p.姓名.Contains(keyword) ||
+                   p.手機.Contains(keyword) ||
+                   p.職稱.Contains(keyword) ||
+                   p.電話.Contains(keyword)
                );
             }
 
+            // 過濾職稱
+            if (String.IsNullOrEmpty(titleName) == false)
+            {
+                data = data.Where(p => p.職稱 == titleName);
+            }
+
+            // 處理排序
+            if (!String.IsNullOrEmpty(sortColumn))
+            {
+                if (isDesc == false)
+                {
+                    if (sortColumn == "職稱") data = data.OrderBy(p => p.職稱);
+                    if (sortColumn == "姓名") data = data.OrderBy(p => p.姓名);
+                    if (sortColumn == "Email") data = data.OrderBy(p => p.Email);
+                    if (sortColumn == "手機") data = data.OrderBy(p => p.手機);
+                    if (sortColumn == "電話") data = data.OrderBy(p => p.電話);
+                    if (sortColumn == "客戶名稱") data = data.OrderBy(p => p.客戶資料.客戶名稱);                    
+                }
+                else
+                {
+                    if (sortColumn == "職稱") data = data.OrderByDescending(p => p.職稱);
+                    if (sortColumn == "姓名") data = data.OrderByDescending(p => p.姓名);
+                    if (sortColumn == "Email") data = data.OrderByDescending(p => p.Email);
+                    if (sortColumn == "手機") data = data.OrderByDescending(p => p.手機);
+                    if (sortColumn == "電話") data = data.OrderByDescending(p => p.電話);
+                    if (sortColumn == "客戶名稱") data = data.OrderByDescending(p => p.客戶資料.客戶名稱);
+                }
+            }
+            
             return data;
         }
+
+        public IList<string> DistanctTitleName()
+        {
+            var data = this.All();
+            SortedList list = new SortedList();
+            foreach( var row in data)
+            {
+                list[row.職稱] = row.職稱;
+            }
+
+            List<string> retList = new List<string>();
+            for (var i = 0; i < list.Count; i++)
+            {
+                retList.Add((string)list.GetKey(i));
+            }
+                       
+            return retList;
+        }
+
 
 
         public byte[] Export(IQueryable<客戶聯絡人> data)

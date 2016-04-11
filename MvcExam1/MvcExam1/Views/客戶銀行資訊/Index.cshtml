@@ -4,10 +4,13 @@
     ViewBag.Title = "客戶銀行資訊";
 }
 
+@using PagedList.Mvc;
+@using PagedList;
+
 <h2>客戶銀行資訊列表</h2>
 
 <p>
-    @using (Html.BeginForm("Search"))
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "searchForm" }))
     {
         <table>
             <tr>
@@ -35,6 +38,7 @@
                 </td>               
             </tr>
         </table>
+        @Html.Hidden("pageIndex")
     }
 </p>
 
@@ -91,3 +95,16 @@
 }
 
 </table>
+
+@Html.PagedListPager((IPagedList)Model, pageIndex => "javascript: change_page_index(" + pageIndex + ");")
+
+
+
+@section Scripts {
+<script type="text/javascript">
+    function change_page_index(index) {
+    document.getElementById("pageIndex").value = index;
+    document.getElementById("searchForm").submit();
+    }
+</script>
+}

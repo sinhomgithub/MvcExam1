@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using NPOI.HSSF.UserModel;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace MvcExam1.Models
 {   
@@ -16,6 +17,14 @@ namespace MvcExam1.Models
 
             return data;
         }
+
+        public 客戶資料 Find(string account)
+        {
+            var data = this.All().Where(p => p.帳號 == account).FirstOrDefault();
+
+            return data;
+        }
+        
 
 
         public IQueryable<客戶資料> All(bool isBase)
@@ -42,15 +51,17 @@ namespace MvcExam1.Models
             entity.是否已刪除 = true;
         }
 
-        public IQueryable<客戶資料> Query(string keyword, string 客戶分類)
+        public IQueryable<客戶資料> Query(string keyword, string 客戶分類, string sortColumn, bool desc)
         {
             var data = this.All();
 
+            // 客戶分類過濾
             if (String.IsNullOrEmpty(客戶分類) == false)
             {
                 data = data.Where(p => p.客戶分類 == 客戶分類);
             }
 
+            // 關鍵字搜尋
             if (String.IsNullOrEmpty(keyword) == false)
             {
 
@@ -62,6 +73,33 @@ namespace MvcExam1.Models
                      p.地址.Contains(keyword) ||
                      p.Email.Contains(keyword)
                  );
+            }
+
+            // 處理排序
+            if (!String.IsNullOrEmpty(sortColumn))
+            {
+                if (desc == false)
+                {
+                    if (sortColumn == "客戶名稱") data = data.OrderBy(p => p.客戶名稱);
+                    if (sortColumn == "帳號") data = data.OrderBy(p => p.帳號);
+                    if (sortColumn == "統一編號") data = data.OrderBy(p => p.統一編號);
+                    if (sortColumn == "電話") data = data.OrderBy(p => p.電話);
+                    if (sortColumn == "傳真") data = data.OrderBy(p => p.傳真);
+                    if (sortColumn == "地址") data = data.OrderBy(p => p.地址);
+                    if (sortColumn == "Email") data = data.OrderBy(p => p.Email);
+                    if (sortColumn == "客戶分類") data = data.OrderBy(p => p.客戶分類);
+                }
+                else
+                {
+                    if (sortColumn == "客戶名稱") data = data.OrderByDescending(p => p.客戶名稱);
+                    if (sortColumn == "帳號") data = data.OrderByDescending(p => p.帳號);
+                    if (sortColumn == "統一編號") data = data.OrderByDescending(p => p.統一編號);
+                    if (sortColumn == "電話") data = data.OrderByDescending(p => p.電話);
+                    if (sortColumn == "傳真") data = data.OrderByDescending(p => p.傳真);
+                    if (sortColumn == "地址") data = data.OrderByDescending(p => p.地址);
+                    if (sortColumn == "Email") data = data.OrderByDescending(p => p.Email);
+                    if (sortColumn == "客戶分類") data = data.OrderByDescending(p => p.客戶分類);
+                }
             }
 
             return data;
@@ -109,6 +147,41 @@ namespace MvcExam1.Models
             ms.Close();
             byte[] bs = ms.ToArray();
 
+            return bs;
+        }
+
+        public bool CheckLogin(string account, string password)
+        {
+            var data = this.All().Where(p => p.帳號 == account).FirstOrDefault();
+            if (data == null)
+                return false;            
+
+            // 比對密碼
+            string dbPasswordStr = data.密碼;
+            string inputPasswordStr = EncryptPassowrd(password);
+
+            if (dbPasswordStr != inputPasswordStr)
+                return false;            
+
+            return true;
+        }
+
+        public string EncryptPassowrd(string source)
+        {
+            string saltStr = "myhash123456";
+            byte[] bs = StringToByteArray(saltStr + source);
+
+            MD5 md5 =  MD5.Create();
+            byte[] hashBs = md5.ComputeHash(bs);
+
+            string str = Convert.ToBase64String(hashBs);
+
+            return str;
+        }
+
+        private byte[] StringToByteArray(string str)
+        {
+            byte[] bs = System.Text.Encoding.UTF8.GetBytes(str);
             return bs;
         }
 

@@ -19,6 +19,14 @@ namespace MvcExam1.Models
         public int Id { get; set; }
 
         [Required]
+        [StringLength(250)]
+        public string 帳號 { get; set; }
+        
+        [StringLength(250)]
+        public string 密碼 { get; set; }
+
+
+        [Required]
         [StringLength(50)]
         public string 客戶名稱 { get; set; }
 

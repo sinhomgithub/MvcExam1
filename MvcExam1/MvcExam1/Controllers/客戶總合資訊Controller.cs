@@ -7,14 +7,17 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MvcExam1.Models;
+using PagedList;
 
 namespace MvcExam1.Controllers
 {
+
+    [Authorize(Roles = "Administrators")]
     public class 客戶總合資訊Controller : BaseController
     {
-        
-        // GET: 客戶總合資訊
-        public ActionResult Index(string keyword, string export)
+
+        // GET: 客戶總合資訊                
+        public ActionResult Index(string keyword, string export, int? pageIndex)
         {
             var data = repo客戶總合資訊.Query(keyword);
 
@@ -25,10 +28,16 @@ namespace MvcExam1.Controllers
                 return this.File(bs, "application/vnd.ms-excel", "客戶總合資訊.xls");
             }
 
-            return View(data);
+
+            // 執行分頁處理
+            var pageNumber = pageIndex ?? 1;
+            var onePageOfData = data.ToPagedList(pageNumber, 3);
+
+            return View(onePageOfData);
         }
 
-        // GET: 客戶總合資訊/Details/5
+
+        // GET: 客戶總合資訊/Details/5                
         public ActionResult Details(int? id)
         {
             if (id.HasValue == false)

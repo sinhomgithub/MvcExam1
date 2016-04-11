@@ -4,10 +4,13 @@
     ViewBag.Title = "客戶聯絡人列表";
 }
 
+@using PagedList.Mvc;
+@using PagedList;
+
 <h2>客戶聯絡人列表</h2>
 
 <p>
-    @using (Html.BeginForm("Search"))
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "searchForm" }))
     {
         <table>
             <tr>
@@ -20,6 +23,12 @@
                 <td>
                     @Html.AntiForgeryToken()
                     @Html.TextBox("keyword")
+                </td>
+                <td>
+                    <label>職稱</label>
+                </td>
+                <td>                    
+                    @Html.DropDownList("TitleName", null, htmlAttributes: new { @class = "form-control" })                    
                 </td>
                 <td>
                     <div class="form-group">
@@ -35,28 +44,43 @@
                 </td>               
             </tr>
         </table>
+        @Html.Hidden("sortColumn")
+        @Html.Hidden("sortDesc")
+        @Html.Hidden("pageIndex")
     }
 </p>
 
 <table class="table">
     <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.職稱)
+        <th>            
+            <a href="javascript:sort_column('@Html.DisplayNameFor(model => model.職稱)');">
+                @Html.DisplayNameFor(model => model.職稱)
+            </a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.姓名)
+            <a href="javascript:sort_column('@Html.DisplayNameFor(model => model.姓名)');">
+                @Html.DisplayNameFor(model => model.姓名)
+            </a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+            <a href="javascript:sort_column('@Html.DisplayNameFor(model => model.Email)');">
+                @Html.DisplayNameFor(model => model.Email)
+            </a>
+        </th>
+        <th>            
+            <a href="javascript:sort_column('@Html.DisplayNameFor(model => model.手機)');">
+                @Html.DisplayNameFor(model => model.手機)
+            </a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.手機)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.電話)
+            <a href="javascript:sort_column('@Html.DisplayNameFor(model => model.電話)');">
+                @Html.DisplayNameFor(model => model.電話)
+            </a>
         </th>        
         <th>
-            @Html.DisplayNameFor(model => model.客戶資料.客戶名稱)
+            <a href="javascript:sort_column('@Html.DisplayNameFor(model => model.客戶資料.客戶名稱)');">
+                @Html.DisplayNameFor(model => model.客戶資料.客戶名稱)
+            </a>
         </th>
         <th></th>
     </tr>
@@ -90,3 +114,30 @@
 }
 
 </table>
+
+
+
+@Html.PagedListPager((IPagedList)Model, pageIndex => "javascript: change_page_index(" + pageIndex + ");")
+
+
+@section Scripts {
+    <script type="text/javascript">
+        function sort_column(column) {
+            document.getElementById("sortColumn").value = column;
+            var sort_desc = document.getElementById("sortDesc").value;
+            if (sort_desc)
+                sort_desc = "";
+            else
+                sort_desc = "true";
+
+            document.getElementById("sortDesc").value = sort_desc;
+            document.getElementById("searchForm").submit();
+        }
+
+        function change_page_index(index) {
+            document.getElementById("pageIndex").value = index;
+            document.getElementById("searchForm").submit();
+        }
+    </script>
+}
+

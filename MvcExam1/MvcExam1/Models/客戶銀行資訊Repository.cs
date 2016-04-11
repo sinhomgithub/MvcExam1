@@ -54,6 +54,8 @@ namespace MvcExam1.Models
                 );
             }
 
+            data = data.OrderBy(p => p.帳戶名稱);
+
             return data;
         }
 

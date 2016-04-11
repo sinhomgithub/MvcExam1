@@ -8,14 +8,19 @@ using System.Web;
 using System.Web.Mvc;
 using MvcExam1.Models;
 using MvcExam1.Library;
+using System.Data.Entity.Infrastructure;
+using PagedList;
 
 namespace MvcExam1.Controllers
 {
-    public class 客戶銀行資訊Controller : BaseController
-    {        
 
-        // GET: 客戶銀行資訊
-        public ActionResult Index(string keyword, string export)
+    [Authorize(Roles = "Administrators")]
+    public class 客戶銀行資訊Controller : BaseController
+    {
+
+
+        // GET: 客戶銀行資訊                
+        public ActionResult Index(string keyword, string export, int? pageIndex)
         {
             var data = repo客戶銀行資訊.Query(keyword);
 
@@ -23,13 +28,18 @@ namespace MvcExam1.Controllers
             {
                 byte[] bs = repo客戶銀行資訊.Export(data);
                 return this.File(bs, "application/vnd.ms-excel", "客戶銀行資訊.xls");
-            }            
-                
-            return View(data.ToList());
+            }
+
+
+            // 執行分頁處理
+            var pageNumber = pageIndex ?? 1;
+            var onePageOfData = data.ToPagedList(pageNumber, 2);
+
+            return View(onePageOfData);
         }
 
-        
-        // GET: 客戶銀行資訊/Details/5
+
+        // GET: 客戶銀行資訊/Details/5                
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -46,7 +56,7 @@ namespace MvcExam1.Controllers
             return View(客戶銀行資訊);
         }
 
-        // GET: 客戶銀行資訊/Create
+        // GET: 客戶銀行資訊/Create                
         public ActionResult Create()
         {
             ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱");
@@ -58,6 +68,7 @@ namespace MvcExam1.Controllers
         // 詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HandleError(ExceptionType = typeof(DbUpdateException), View = "DatabaseError")]        
         public ActionResult Create([Bind(Include = "Id,客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼,是否已刪除")] 客戶銀行資訊 客戶銀行資訊)
         {
             if (ModelState.IsValid)
@@ -72,7 +83,7 @@ namespace MvcExam1.Controllers
             return View(客戶銀行資訊);
         }
 
-        // GET: 客戶銀行資訊/Edit/5
+        // GET: 客戶銀行資訊/Edit/5                
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -93,6 +104,7 @@ namespace MvcExam1.Controllers
         // 詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HandleError(ExceptionType = typeof(DbUpdateException), View = "DatabaseError")]        
         public ActionResult Edit([Bind(Include = "Id,客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼,是否已刪除")] 客戶銀行資訊 客戶銀行資訊)
         {
             if (ModelState.IsValid)
@@ -106,7 +118,7 @@ namespace MvcExam1.Controllers
             return View(客戶銀行資訊);
         }
 
-        // GET: 客戶銀行資訊/Delete/5
+        // GET: 客戶銀行資訊/Delete/5                
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -125,6 +137,7 @@ namespace MvcExam1.Controllers
         // POST: 客戶銀行資訊/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [HandleError(ExceptionType = typeof(DbUpdateException), View = "DatabaseError")]        
         public ActionResult DeleteConfirmed(int id)
         {
             客戶銀行資訊 客戶銀行資訊 = repo客戶銀行資訊.Find(id);
