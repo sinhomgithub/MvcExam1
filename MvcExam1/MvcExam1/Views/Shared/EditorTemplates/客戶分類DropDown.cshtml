@@ -1,0 +1,7 @@
+﻿@model string
+
+@{ 
+    var repo = MvcExam1.Models.RepositoryHelper.Get客戶分類清單Repository();
+    var selectList = new SelectList(repo.All().ToList() , "客戶分類", "客戶分類", Model);   // 取出客戶分類清單的資料    
+}
+@Html.DropDownList("", selectList, "-- 請選擇客戶分類 --", new { @class = "form-control" })

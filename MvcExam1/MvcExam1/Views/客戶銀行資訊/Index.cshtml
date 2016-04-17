@@ -10,7 +10,7 @@
 <h2>客戶銀行資訊列表</h2>
 
 <p>
-    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "searchForm" }))
+    @using (Html.BeginForm(null, null, FormMethod.Get, new { id = "searchForm" }))
     {
         <table>
             <tr>
@@ -20,9 +20,8 @@
                 <td>
                     <label>關鍵字</label>
                 </td>
-                <td>
-                    @Html.AntiForgeryToken()
-                    @Html.TextBox("keyword")
+                <td>                    
+                    @Html.TextBox("keyword", null, new {@class="form-control" })
                 </td>
                 <td>
                     <div class="form-group">

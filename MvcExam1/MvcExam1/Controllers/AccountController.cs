@@ -76,31 +76,51 @@ namespace MvcExam1.Controllers
                 return HttpNotFound();
             }
 
-            Response.Write("Administrators Role=" + User.IsInRole("Administrators"));
+            // 將 data 值填入輸入用的 ViewModel
+            EditProfileViewModel model = new EditProfileViewModel();
+            model.Email = data.Email;
+            model.傳真 = data.傳真;
+            model.地址 = data.地址;            
+            model.客戶分類 = data.客戶分類;
+            model.客戶名稱 = data.客戶名稱;
+            model.帳號 = data.帳號;
+            model.統一編號 = data.統一編號;
+            model.電話 = data.電話;
 
-            return View(data);
+            ViewData.Model = model;
+
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditProfile(int id, string 密碼)
+        public ActionResult EditProfile(FormCollection form)
         {
-            var data = repo客戶資料.Find(id);
+            string accountStr = User.Identity.Name;     // 從登入身份取出個人資訊
+            var data = repo客戶資料.Find(accountStr);
+
             if (data == null)
             {
                 return HttpNotFound();
             }
 
-            // 手動 Model Bind
-            if (this.TryUpdateModel(data, new string[] { "電話","傳真","地址","Email" }))
+            EditProfileViewModel model = new EditProfileViewModel();
+            
+            // 手動 Model Bind,  讓 model 填入 form 的內容
+            if (this.TryUpdateModel(model, new string[] { "密碼", "確認密碼", "電話", "傳真", "地址", "Email" }))
             {
-                data.密碼 = repo客戶資料.EncryptPassowrd(密碼);     // 把密碼加密
+                // 設定要修改的欄位值
+                data.密碼 = repo客戶資料.EncryptPassowrd(model.密碼);     // 把密碼加密                
+                data.Email = model.Email;
+                data.傳真 = model.傳真;
+                data.地址 = model.地址;                
+                data.電話 = model.電話;
 
                 repo客戶資料.UnitOfWork.Commit();
                 return RedirectToAction("Index", "Home");
             }
 
-            return View(data);
+            return View(model);
         }
 
 

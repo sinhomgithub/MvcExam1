@@ -42,8 +42,7 @@ namespace MvcExam1.Controllers
             var onePageOfData = data.ToPagedList(pageNumber, 3);
 
             // Bind 職稱清單 (TitleName)
-            IList<string> titleList = repo客戶聯絡人.DistanctTitleName();
-            titleList.Insert(0, "");    // 加入空的職稱 ,用來全選
+            IList<string> titleList = repo客戶聯絡人.DistanctTitleName();            
             ViewBag.TitleName = new SelectList(titleList, titleName);
 
             return View(onePageOfData);
@@ -68,7 +67,7 @@ namespace MvcExam1.Controllers
         // GET: 客戶聯絡人/Create
         public ActionResult Create()
         {
-            ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱");
+            //ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱");
             return View();
         }
 
@@ -88,7 +87,7 @@ namespace MvcExam1.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱", 客戶聯絡人.客戶Id);
+            //ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱", 客戶聯絡人.客戶Id);
             return View(客戶聯絡人);
         }
 
@@ -99,12 +98,15 @@ namespace MvcExam1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             客戶聯絡人 客戶聯絡人 = repo客戶聯絡人.Find(id.Value);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱", 客戶聯絡人.客戶Id);
+
+            //ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱", 客戶聯絡人.客戶Id);
+
             return View(客戶聯絡人);
         }
 
@@ -114,7 +116,7 @@ namespace MvcExam1.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [HandleError(ExceptionType = typeof(DbUpdateException), View = "DatabaseError")]        
-        public ActionResult Edit([Bind(Include = "Id,客戶Id,職稱,姓名,Email,手機,電話,是否已刪除")] 客戶聯絡人 客戶聯絡人)
+        public ActionResult Edit([Bind(Include = "Id,客戶Id,職稱,姓名,Email,手機,電話")] 客戶聯絡人 客戶聯絡人)
         {
             if (ModelState.IsValid)
             {
@@ -124,7 +126,8 @@ namespace MvcExam1.Controllers
                 
                 return RedirectToAction("Index");
             }
-            ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱", 客戶聯絡人.客戶Id);
+            //ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱");
+
             return View(客戶聯絡人);
         }
 
@@ -135,6 +138,7 @@ namespace MvcExam1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             客戶聯絡人 客戶聯絡人 = repo客戶聯絡人.Find(id.Value);
             if (客戶聯絡人 == null)
             {

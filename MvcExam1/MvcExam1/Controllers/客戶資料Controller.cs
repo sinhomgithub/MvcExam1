@@ -69,12 +69,10 @@ namespace MvcExam1.Controllers
             if (客戶資料data == null)
             {
                 return HttpNotFound();
-            }
-
-            var 客戶聯絡人data = repo客戶聯絡人.QueryBy客戶Id(id.Value);
+            }            
             
             ViewData.Model = 客戶資料data;
-            ViewBag.客戶聯絡人 = 客戶聯絡人data;            
+            ViewBag.客戶聯絡人 = 客戶資料data.客戶聯絡人;
                                     
             return View();
         }
@@ -87,10 +85,14 @@ namespace MvcExam1.Controllers
         [HttpPost]
         [HandleError(ExceptionType = typeof(DbUpdateException), View = "DatabaseError")]
         public ActionResult Details(IList<MvcExam1.ViewModels.客戶資料DetailsBatchUpdateViewModel> data, int 客戶資料Id)
-        {        
+        {
             var 客戶資料data = repo客戶資料.Find(客戶資料Id);
-            var 客戶聯絡人data = repo客戶聯絡人.QueryBy客戶Id(客戶資料Id);
 
+            if(客戶資料data == null)
+            {
+                return HttpNotFound();
+            }
+                        
             // 如果比對合法
             if (data != null && ModelState.IsValid)
             {
@@ -108,7 +110,7 @@ namespace MvcExam1.Controllers
 
             // 更新失敗重新顯示內容            
             ViewData.Model = 客戶資料data;
-            ViewBag.客戶聯絡人 = 客戶聯絡人data;            
+            ViewBag.客戶聯絡人 = 客戶資料data.客戶聯絡人;
 
             return View();
         }
@@ -119,7 +121,7 @@ namespace MvcExam1.Controllers
         [HandleError(ExceptionType = typeof(Exception), View = "GeneralError")]
         public ActionResult Create()
         {           
-            ViewBag.客戶分類 = new SelectList(repo客戶分類清單.All(), "客戶分類", "客戶分類");   // 取出客戶分類清單的資料
+            //ViewBag.客戶分類 = new SelectList(repo客戶分類清單.All(), "客戶分類", "客戶分類");   // 取出客戶分類清單的資料
 
             return View();
         }
@@ -141,7 +143,7 @@ namespace MvcExam1.Controllers
             }            
 
             // 驗證不過
-            ViewBag.客戶分類 = new SelectList(repo客戶分類清單.All(), "客戶分類", "客戶分類", 客戶資料.客戶分類);   // 取出客戶分類清單的資料   
+            //ViewBag.客戶分類 = new SelectList(repo客戶分類清單.All(), "客戶分類", "客戶分類");   // 取出客戶分類清單的資料   
 
             return View(客戶資料);
         }
@@ -161,7 +163,7 @@ namespace MvcExam1.Controllers
                 return HttpNotFound();
             }
 
-            ViewBag.客戶分類 = new SelectList(repo客戶分類清單.All(), "客戶分類", "客戶分類", 客戶資料.客戶分類);   // 取出客戶分類清單的資料          
+            //ViewBag.客戶分類 = new SelectList(repo客戶分類清單.All(), "客戶分類", "客戶分類", 客戶資料.客戶分類);   // 取出客戶分類清單的資料          
 
             return View(客戶資料);
         }
@@ -189,7 +191,7 @@ namespace MvcExam1.Controllers
             
 
             // 驗證不過
-            ViewBag.客戶分類 = new SelectList(repo客戶分類清單.All(), "客戶分類", "客戶分類", data.客戶分類);   // 取出客戶分類清單的資料          
+            //ViewBag.客戶分類 = new SelectList(repo客戶分類清單.All(), "客戶分類", "客戶分類", data.客戶分類);   // 取出客戶分類清單的資料          
 
             return View(data);
         }

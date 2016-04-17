@@ -1,0 +1,7 @@
+﻿@model int?
+
+@{ 
+    var repo = MvcExam1.Models.RepositoryHelper.Get客戶資料Repository();
+    var selectList = new SelectList(repo.All().ToList(), "Id", "客戶名稱", Model);   // 取出客戶分類清單的資料    
+}
+@Html.DropDownList("", selectList, "-- 請選擇客戶 --", new { @class = "form-control" })

@@ -389,10 +389,13 @@
     <Content Include="Views\Account\EditProfile.cshtml" />
     <Content Include="Views\Shared\ArgumentError.cshtml" />
     <Content Include="Views\Shared\IOError.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\客戶分類DropDown.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\客戶IdDropDown.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Base\" />
+    <Folder Include="Views\Shared\DisplayTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

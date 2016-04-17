@@ -59,7 +59,7 @@ namespace MvcExam1.Controllers
         // GET: 客戶銀行資訊/Create                
         public ActionResult Create()
         {
-            ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱");
+            //ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱");
             return View();
         }
 
@@ -79,7 +79,8 @@ namespace MvcExam1.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+
+            //ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱");
             return View(客戶銀行資訊);
         }
 
@@ -105,7 +106,7 @@ namespace MvcExam1.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [HandleError(ExceptionType = typeof(DbUpdateException), View = "DatabaseError")]        
-        public ActionResult Edit([Bind(Include = "Id,客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼,是否已刪除")] 客戶銀行資訊 客戶銀行資訊)
+        public ActionResult Edit([Bind(Include = "Id,客戶Id,銀行名稱,銀行代碼,分行代碼,帳戶名稱,帳戶號碼")] 客戶銀行資訊 客戶銀行資訊)
         {
             if (ModelState.IsValid)
             {
@@ -114,7 +115,7 @@ namespace MvcExam1.Controllers
                 repo客戶銀行資訊.UnitOfWork.Commit();                
                 return RedirectToAction("Index");
             }
-            ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱", 客戶銀行資訊.客戶Id);
+            ViewBag.客戶Id = new SelectList(repo客戶資料.All(), "Id", "客戶名稱");
             return View(客戶銀行資訊);
         }
 

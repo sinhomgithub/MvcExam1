@@ -100,19 +100,8 @@ namespace MvcExam1.Models
         public IList<string> DistanctTitleName()
         {
             var data = this.All();
-            SortedList list = new SortedList();
-            foreach( var row in data)
-            {
-                list[row.職稱] = row.職稱;
-            }
-
-            List<string> retList = new List<string>();
-            for (var i = 0; i < list.Count; i++)
-            {
-                retList.Add((string)list.GetKey(i));
-            }
-                       
-            return retList;
+            var list = data.Select(p => p.職稱).Distinct().OrderBy(p => p).ToList();                       
+            return list;
         }
 
 
